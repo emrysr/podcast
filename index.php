@@ -1,7 +1,7 @@
 <?php 
   include_once('settings/db.php');
 
-  $sql = "SELECT * FROM pod_list";
+  $sql = "SELECT * FROM pod_list ORDER BY id DESC";
 
   if(!$result = $db->query($sql)){
       die('There was an error running the query [' . $db->error . ']');
@@ -85,7 +85,7 @@
       if(!$track_result = $db->query($tracks)){
         die('There was an error running the query [' . $db->error . ']');
       }
-    //}
+    }
     ?>
   </div>
 </main>
@@ -153,7 +153,6 @@
     </div>
   </div>
 </div>
-<?php }?>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
