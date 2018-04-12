@@ -57,7 +57,13 @@
   <div class="my-3 p-3 bg-white rounded box-shadow">
     <h6 class="border-bottom border-gray pb-2 mb-0">Podcast <span class="badge badge-pill bg-light align-text-bottom"><?php echo $result->num_rows ?></span></h6>
     <?php 
+    $i = 0;
     while($row = $result->fetch_assoc()){
+      //loop through all tracks for this podcast
+      $tracks = "SELECT tracks.*, pod.title FROM podcasts_tracks as tracks LEFT JOIN pod_list as pod ON tracks.podcast_id = pod.id WHERE tracks.podcast_id = ".$row['id'];
+      if(!$track_result = $db->query($tracks)){
+        die('There was an erro running the query [' . $db->error . ']');
+      }
     ?>
       <div class='media text-muted pt-3'>
         <img src='image/podcast-logo-itunes.jpg' alt="podcast image" title="<?php echo $row['title'];?>" class='mr-2 rounded' width='80'>
@@ -71,22 +77,10 @@
             <?php
             }
             ?>
-            <a href='#' data-toggle='modal' data-target='#tracksModal' class="text-dark"><i class='fa fa-list ml-3 mr-1'></i>Track Listings</a>
+            <a href='#' data-toggle='modal' data-target='#tracksModal_<?php echo $i ?>' class="text-dark"><i class='fa fa-list ml-3 mr-1'></i>Track Listings</a>
           </small>
         </p>
       </div>
-    <?php
-      $tracks = "SELECT tracks.*, pod.title FROM podcasts_tracks as tracks LEFT JOIN pod_list as pod ON tracks.podcast_id = pod.id WHERE tracks.podcast_id = ".$row['id'];
-      if(!$tracks_pod_title = $db->query($tracks)){
-        die('There was an erro running the query [' . $db->error . ']');
-      }
-      $rowttitle = $tracks_pod_title->fetch_assoc();
-
-      if(!$track_result = $db->query($tracks)){
-        die('There was an error running the query [' . $db->error . ']');
-      }
-    }
-    ?>
   </div>
 </main>
 <footer class="footer">
@@ -111,11 +105,11 @@
   </div>
 </div>
 <?php // Track listings ?>
-<div class="modal fade" id="tracksModal" tabindex="-1" role="dialog" aria-labelledby="tracksModalTitle" aria-hidden="true">
+<div class="modal fade" id="tracksModal_<?php echo $i ?>" tabindex="-1" role="dialog" aria-labelledby="tracksModalTitle_<?php echo $i ?>" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="tracksModalTitle">Track Listing for <?php echo $rowttitle['title']?></h5>
+        <h5 class="modal-title" id="tracksModalTitle_<?php echo $i ?>">Track Listing for <?php echo $rowttitle['title']?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -132,16 +126,16 @@
           </thead>
           <tbody>
           <?php 
-            $i=1;
+            $j=1;
             while($rowt = $track_result->fetch_assoc()){
           ?>
             <tr>
-              <th scope='row'><?php echo $i;?></th>
+              <th scope='row'><?php echo $j;?></th>
               <td><?php echo $rowt['track_artist']?></td>
               <td><?php echo $rowt['track_title']?></td>
             </tr>
           <?php
-            $i++;
+            $j++;
             }
           ?>
           </tbody>
@@ -153,6 +147,11 @@
     </div>
   </div>
 </div>
+<?php
+$i++;
+    }
+?>
+
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
