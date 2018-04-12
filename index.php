@@ -85,7 +85,7 @@
       if(!$track_result = $db->query($tracks)){
         die('There was an error running the query [' . $db->error . ']');
       }
-    }
+    //}
     ?>
   </div>
 </main>
@@ -153,6 +153,7 @@
     </div>
   </div>
 </div>
+<?php }?>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
